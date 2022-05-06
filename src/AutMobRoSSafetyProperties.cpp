@@ -1,6 +1,6 @@
-#include "MyRobotSafetyProperties.hpp"
+#include "AutMobRoSSafetyProperties.hpp"
 
-MyRobotSafetyProperties::MyRobotSafetyProperties(ControlSystem &cs, double dt)
+AutMobRoSSafetyProperties::AutMobRoSSafetyProperties(ControlSystem &cs, double dt)
     : cs(cs),
     
       slSystemOff("System is offline"),

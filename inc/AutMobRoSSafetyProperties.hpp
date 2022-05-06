@@ -1,14 +1,14 @@
-#ifndef MyRobotSAFETYPROPERTIES_HPP_
-#define MyRobotSAFETYPROPERTIES_HPP_
+#ifndef AutMobRoSSAFETYPROPERTIES_HPP_
+#define AutMobRoSSAFETYPROPERTIES_HPP_
 
 #include <eeros/safety/SafetyProperties.hpp>
 #include <eeros/hal/HAL.hpp>
 #include "ControlSystem.hpp"
 
-class MyRobotSafetyProperties : public eeros::safety::SafetyProperties
+class AutMobRoSSafetyProperties : public eeros::safety::SafetyProperties
 {
 public:
-    MyRobotSafetyProperties(ControlSystem &cs, double dt);
+    AutMobRoSSafetyProperties(ControlSystem &cs, double dt);
 
     // Define all possible events
     eeros::safety::SafetyEvent doSystemOff;
@@ -28,4 +28,4 @@ private:
     ControlSystem &cs;
 };
 
-#endif // MyRobotSAFETYPROPERTIES_HPP_
+#endif // AutMobRoSSAFETYPROPERTIES_HPP_
