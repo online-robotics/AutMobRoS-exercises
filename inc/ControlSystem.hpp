@@ -3,8 +3,9 @@
 
 #include <eeros/control/TimeDomain.hpp>
 #include <eeros/core/Executor.hpp>
-#include <eeros/control/Constant.hpp>
+#include <eeros/control/PeripheralInput.hpp>
 #include <eeros/control/Gain.hpp>
+#include <eeros/control/PeripheralOutput.hpp>
 
 using namespace eeros::control;
 
@@ -14,8 +15,9 @@ public:
     ControlSystem(double dt);
 
     // Define Blocks
-    Constant<> myConstant;
-    Gain<> myGain;
+    PeripheralInput<> q1;
+    Gain<> g;
+    PeripheralOutput<> servo;
 
     TimeDomain timedomain;
 };
