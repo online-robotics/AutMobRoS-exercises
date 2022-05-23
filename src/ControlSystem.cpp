@@ -1,7 +1,7 @@
 #include "ControlSystem.hpp"
 
 ControlSystem::ControlSystem(double dt)
-    : E2("enc1"),
+    : E2("enc2"),
       timedomain("Main time domain", dt, true)
 {
     // Name all blocks
