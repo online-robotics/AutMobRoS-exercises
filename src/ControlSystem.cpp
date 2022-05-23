@@ -1,7 +1,7 @@
 #include "ControlSystem.hpp"
 
 ControlSystem::ControlSystem(double dt)
-    : E2("enc2"), cont(21.2/2.0/M_PI), qdMax(21.2), i(3441/104), kM(8.44e-3), M1("motor1"),
+    : E2("enc2"), cont(21.2/2.0/M_PI), qdMax(21.2), i(3441.0/104.0), kM(8.44e-3), M1("motor1"),
       timedomain("Main time domain", dt, true)
 {
     // Name all blocks
