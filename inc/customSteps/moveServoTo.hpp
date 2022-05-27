@@ -21,6 +21,7 @@ public:
 
     int action()
     {
+        log.info() << "Moving to " << c << " rad.";
         cs.c.setValue(c);
         return 0;
     }
