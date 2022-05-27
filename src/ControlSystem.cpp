@@ -14,11 +14,14 @@ ControlSystem::ControlSystem(double dt)
       i(3441.0/104.0),
       kM(8.44e-3),
       M1("motor1"),
+      M2("motor2"),
       timedomain("Main time domain", dt, true)
 {
     // Name all blocks
     E1.setName("E1");
     E2.setName("E2");
+    E_d.setName("E_d");
+    E.setName("E");
     e.setName("e");
     Kp.setName("Kp");
     ed.setName("ed");
@@ -34,11 +37,15 @@ ControlSystem::ControlSystem(double dt)
     i.setName("i");
     kM.setName("kM");
     U1.setName("U1");
+    U.setName("U");
     M1.setName("M1");
+    M2.setName("M2");
 
     // Name all signals
     E1.getOut().getSignal().setName("q1 [rad]");
     E2.getOut().getSignal().setName("q2 [rad]");
+    E_d.getOut().getSignal().setName("q_d [rad]");
+    E.getOut().getSignal().setName("q [rad]");
     e.getOut().getSignal().setName("e [rad]");
     Kp.getOut().getSignal().setName("qdd_cp [rad/s^2]");
     ed.getOut().getSignal().setName("ed [rad/s]");
@@ -54,10 +61,16 @@ ControlSystem::ControlSystem(double dt)
     i.getOut().getSignal().setName("om1 [rad/s]");
     kM.getOut().getSignal().setName("Uom [V]");
     U1.getOut().getSignal().setName("U1 [V]");
+    U.getOut(0).getSignal().setName("U [V]");
+    U.getOut(1).getSignal().setName("U [V]");
 
     // Connect signals
-    e.getIn(0).connect(E2.getOut());
-    e.getIn(1).connect(E1.getOut());
+    E_d.getIn(0).connect(E2.getOut());
+    E_d.getIn(1).connect(E1.getOut());
+    E.getIn(0).connect(E1.getOut());
+    E.getIn(1).connect(E2.getOut());
+    e.getIn(0).connect(E_d.getOut());
+    e.getIn(1).connect(E.getOut());
     e.negateInput(1);
     Kp.getIn().connect(e.getOut());
     ed.getIn().connect(e.getOut());
@@ -69,17 +82,21 @@ ControlSystem::ControlSystem(double dt)
     iInv.getIn().connect(QMax.getOut());
     kMInv.getIn().connect(iInv.getOut());
     R.getIn().connect(kMInv.getOut());
-    qd1.getIn().connect(E1.getOut());
+    qd1.getIn().connect(E.getOut());
     qdMax.getIn().connect(qd1.getOut());
     i.getIn().connect(qdMax.getOut());
     kM.getIn().connect(i.getOut());
     U1.getIn(0).connect(R.getOut());
     U1.getIn(1).connect(kM.getOut());
-    M1.getIn().connect(U1.getOut());
+    U.getIn().connect(U1.getOut());
+    M1.getIn().connect(U.getOut(0));
+    M2.getIn().connect(U.getOut(1));
 
     // Add blocks to timedomain
     timedomain.addBlock(E1);
     timedomain.addBlock(E2);
+    timedomain.addBlock(E_d);
+    timedomain.addBlock(E);
     timedomain.addBlock(e);
     timedomain.addBlock(Kp);
     timedomain.addBlock(ed);
@@ -95,7 +112,9 @@ ControlSystem::ControlSystem(double dt)
     timedomain.addBlock(i);
     timedomain.addBlock(kM);
     timedomain.addBlock(U1);
+    timedomain.addBlock(U);
     timedomain.addBlock(M1);
+    timedomain.addBlock(M2);
 
     // Add timedomain to executor
     eeros::Executor::instance().add(timedomain);
