@@ -27,7 +27,7 @@ int main(int argc, char **argv)
     hal.readConfigFromFile(&argc, argv);
 
     log.info() << "Initializing control system...";
-    ControlSystem cs(0.1);
+    ControlSystem cs(dt);
 
     log.info() << "Initializing safety system...";
     AutMobRoSSafetyProperties sp(cs, dt);
