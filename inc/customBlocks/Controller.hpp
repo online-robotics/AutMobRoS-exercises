@@ -98,7 +98,7 @@ private:
         ed.getOut().getSignal().setName("ed [rad/s]");
         Kd.getOut().getSignal().setName("qdd_cd [rad/s^2]");
         qdd_c.getOut().getSignal().setName("qdd_c [rad/s^2]");
-        M.getOut().getSignal().setName("Q1 [Nm]");
+        M.getOut().getSignal().setName("Q [Nm]");
         qd.getOut().getSignal().setName("qd [rad/s]");
 
         // Connect signals
