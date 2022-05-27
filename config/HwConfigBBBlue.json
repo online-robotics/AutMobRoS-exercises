@@ -71,11 +71,16 @@
 				"signalId": "motor1",
 				"scale": [ { "id" : "dac",
 							"minIn": 	-1.0, 	"maxIn": 	1.0,
-							"minOut": 	-8.2, 	"maxOut": 	8.2 }
-					 ],
+							"minOut": 	-8.2, 	"maxOut": 	8.2 },
+							{ "id" : "inv",
+							"scale": -1.0, "offset": 0.0 }
+					],
 				"range": [ { "id" : "dac",
 							"minIn": 	-1.0, 	"maxIn": 	1.0,
-							"minOut": 	-8.2, 	"maxOut": 	8.2 }
+							"minOut": 	-8.2, 	"maxOut": 	8.2 },
+							{ "id" : "inv",
+							"minIn": 	-8.2, 	"maxIn": 	8.2,
+							"minOut": 	 8.2, 	"maxOut":  -8.2 }
 					 ],
 				"unit": "V"
 			},
@@ -176,13 +181,18 @@
 							"minOut":	0, "maxOut": 16 },
 							{ "id" : "fqd",
 							"minIn": 	0, "maxIn": 1,
-							"minOut":	0, "maxOut": 4 }
+							"minOut":	0, "maxOut": 4 },
+							{ "id" : "inv",
+							"minIn": 	1.0, "maxIn": -1.0,
+							"minOut":	-1.0, "maxOut": 1.0 }
 					 ],
 				"range": [ { "id" : "gear",
 							"noLimit": 	true },
 							{ "id" : "enc",
 							"noLimit": 	true },
 							{ "id" : "fqd",
+							"noLimit": 	true },
+							{ "id" : "inv",
 							"noLimit": 	true }
 					 ],
 				"unit": "rad"
