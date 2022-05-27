@@ -169,8 +169,8 @@
 			"channel1": {
 				"signalId": "enc1",
 				"scale": [ { "id" : "gear",
-							"minIn": 	0, "maxIn": 1,
-							"minOut":	0, "maxOut": 33.086538461 },
+							"minIn": 	0, "maxIn": 104,
+							"minOut":	0, "maxOut": 3441 },
 							{ "id" : "enc",
 							"minIn": 	0, "maxIn": 6.283185307,
 							"minOut":	0, "maxOut": 16 },
@@ -190,8 +190,8 @@
 			"channel2": {
 				"signalId": "enc2",
 				"scale": [ { "id" : "gear",
-							"minIn": 	0, "maxIn": 1,
-							"minOut":	0, "maxOut": 33.086538461 },
+							"minIn": 	0, "maxIn": 104,
+							"minOut":	0, "maxOut": 3441 },
 							{ "id" : "enc",
 							"minIn": 	0, "maxIn": 6.283185307,
 							"minOut":	0, "maxOut": 16 },
