@@ -29,6 +29,11 @@ public:
     Gain<> iInv;
     Gain<> kMInv;
     Gain<> R;
+    D<> qd1;
+    Saturation<> qdMax;
+    Gain<> i;
+    Gain<> kM;
+    Sum<> U1;
     PeripheralOutput<> M1;
 
     TimeDomain timedomain;
