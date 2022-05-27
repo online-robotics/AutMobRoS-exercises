@@ -1,7 +1,7 @@
 #include "ControlSystem.hpp"
 
 ControlSystem::ControlSystem(double dt)
-    : q1("enc1"), g(2.0), c(0.0), servo("servo1"),
+    : q1("quat1"), g(2.0), c(0.0), servo("servo1"),
       timedomain("Main time domain", dt, true)
 {
     // Name all blocks
