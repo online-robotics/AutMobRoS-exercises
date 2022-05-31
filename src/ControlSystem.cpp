@@ -3,7 +3,7 @@
 ControlSystem::ControlSystem(double dt)
     : E1("enc1"),
       E2("enc2"),
-      cont(1.0/dt, 0.7, 2.2, 3441.0 / 104.0 * 3441.0 / 104.0 * 6.8e-8),
+      cont(1.0/dt, 0.7, 2.3, 3441.0 / 104.0 * 3441.0 / 104.0 * 6.8e-8),
       invMotMod(0.1, 21.2, 3441.0/104.0, 8.44e-3, 8.0),
       M1("motor1"),
       M2("motor2"),
