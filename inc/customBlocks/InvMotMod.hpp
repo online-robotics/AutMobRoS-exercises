@@ -1,6 +1,17 @@
 #ifndef INVMOTMOD_HPP_
 #define INVMOTMOD_HPP_
 
+/**
+ * @file InvMotMod.hpp
+ * @author Jonas Frei (jonas.frei@ost.ch)
+ * @brief Inverse motor model block
+ * @version 0.1
+ * @date 2022-06-01
+ * 
+ * @copyright Copyright (c) 2022
+ * 
+ */
+
 #include <eeros/control/Block.hpp>
 #include <eeros/control/Sum.hpp>
 #include <eeros/control/Gain.hpp>
@@ -8,16 +19,18 @@
 
 using namespace eeros::control;
 
-/*!
- * Inverse motor modell class
+/**
+ * @brief Inverse motor modell class
+ * 
+ * @tparam T output type (default double)
  */
 template <typename T = double>
 class InvMotMod : public Block
 {
 public:
-    /*!
-     * Constructor
-     *
+    /**
+     * @brief Construct a new Inv Mot Mod object
+     * 
      * @param QMax maximum torque
      * @param qdMax maximum velocity
      * @param i transmission ratio
@@ -63,10 +76,11 @@ public:
         U.getIn(1).connect(this->kM.getOut());
     }
 
-    /*!
-     * Input getter function
-     *
+    /**
+     * @brief Input getter function
+     * 
      * @param index input index
+     * @return Input<T>& index 0: torque input, index 1: velocity input
      */
     virtual Input<T> &getIn(uint8_t index)
     {
@@ -84,16 +98,19 @@ public:
         }
     }
 
-    /*!
-     * Output getter function
+    /**
+     * @brief Output getter function
+     * 
+     * @return Output<T>& motor voltage
      */
     virtual Output<T> &getOut()
     {
         return U.getOut();
     }
 
-    /*!
-     * run method
+    /**
+     * @brief run method
+     * 
      */
     virtual void run()
     {
