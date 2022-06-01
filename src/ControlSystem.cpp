@@ -1,13 +1,15 @@
 #include "ControlSystem.hpp"
 
+using namespace AMRSC;
+
 ControlSystem::ControlSystem(double dt)
     : E1("enc1"),
       E2("enc2"),
-      fwKinOdom(0.15),
-      pp(0.5, 1.0, 1.0, 1e-3, 1e-3),
-      invKin(0.15),
-      cont(1 / dt, 0.7, 2.3, 3441.0 / 104.0 / 0.04 * 3441.0 / 104.0 / 0.04 * 6.8e-8, 0.1),
-      invMotMod(0.1 / 0.04, 21.2 * 0.04, 3441.0 / 104.0 / 0.04, 8.44e-3, 8.0),
+      fwKinOdom(ROB::B),
+      pp(PP::K1, PP::K2, PP::K3, PP::POSTOL, PP::ROTTOL),
+      invKin(ROB::B),
+      cont(1.0 / dt, CONT::D, CONT::s, CONT::M, CONT::ILIMIT),
+      invMotMod(MOT::QMAX, MOT::qdMAX, MOT::i, MOT::KM, MOT::R),
       M1("motor1"),
       M2("motor2"),
       timedomain("Main time domain", dt, true)

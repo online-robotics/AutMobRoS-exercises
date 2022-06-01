@@ -13,6 +13,7 @@
 #include "customBlocks/InvMotMod.hpp"
 #include <eeros/control/DeMux.hpp>
 #include <eeros/control/PeripheralOutput.hpp>
+#include "AutMobRosConstants.hpp"
 
 using namespace eeros::control;
 

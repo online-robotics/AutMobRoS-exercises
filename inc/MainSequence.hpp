@@ -33,11 +33,11 @@ public:
         while (eeros::sequencer::Sequencer::running)
         {
             sleep(1.0);
-            moveTo(1.0, 0.0, 0.0);
+            moveTo(0.5, 0.0, 0.0);
             sleep(1.0);
-            moveTo(1.0, 1.0, M_PI / 2.0);
+            moveTo(0.5, 0.5, M_PI / 2.0);
             sleep(1.0);
-            moveTo(0.0, 1.0, M_PI);
+            moveTo(0.0, 0.5, M_PI);
             sleep(1.0);
             moveTo(0.0, 0.0, 0.0);
         }
