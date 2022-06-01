@@ -50,14 +50,14 @@ public:
      * 
      * @return Input<>& Input for the robot velocity in x direction
      */
-    Input<> &getInRvRx() { return WJR.getIn(0); }
+    Input<> &getInRvRx_d() { return WJR.getIn(0); }
 
     /**
      * @brief Input getter function
      * 
      * @return Input<>& Input for the angular robot velocity
      */
-    Input<> &getInOmegaR() { return WJR.getIn(1); }
+    Input<> &getInOmegaR_d() { return WJR.getIn(1); }
 
     /**
      * @brief Ouput getter function

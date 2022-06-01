@@ -39,8 +39,8 @@ ControlSystem::ControlSystem(double dt)
     fwKinOdom.getIn().connect(Ed.getOut());
     pp.getInGrR().connect(fwKinOdom.getOutGrR());
     pp.getInphi().connect(fwKinOdom.getOutPhi());
-    invKin.getInRvRx().connect(pp.getOutRvRx_d());
-    invKin.getInOmegaR().connect(pp.getOutomegaR_d());
+    invKin.getInRvRx_d().connect(pp.getOutRvRx_d());
+    invKin.getInOmegaR_d().connect(pp.getOutomegaR_d());
     cont.getIn(0).connect(invKin.getOut());
     cont.getIn(1).connect(Ed.getOut());
     invMotMod.getIn(0).connect(cont.getOut(0));
