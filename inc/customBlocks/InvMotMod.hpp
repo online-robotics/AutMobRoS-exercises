@@ -8,10 +8,22 @@
 
 using namespace eeros::control;
 
+/*!
+ * Inverse motor modell class
+ */
 template <typename T = double>
 class InvMotMod : public Block
 {
 public:
+    /*!
+     * Constructor
+     *
+     * @param QMax maximum torque
+     * @param qdMax maximum velocity
+     * @param i transmission ratio
+     * @param kM motor konstant
+     * @param R motor resistance
+     */
     InvMotMod(double QMax, double qdMax, double i, double kM, double R)
         : QMax(QMax),
           iInv(1.0 / i),
@@ -24,6 +36,11 @@ public:
         init();
     }
 
+    /*!
+     * Input getter function
+     *
+     * @param index input index
+     */
     virtual Input<T> &getIn(uint8_t index)
     {
         if (index == 0)
@@ -40,11 +57,17 @@ public:
         }
     }
 
+    /*!
+     * Output getter function
+     */
     virtual Output<T> &getOut()
     {
         return U.getOut();
     }
 
+    /*!
+     * run method
+     */
     virtual void run()
     {
         QMax.run();
