@@ -2,7 +2,7 @@
 
 AutMobRoSSafetyProperties::AutMobRoSSafetyProperties(ControlSystem &cs, double dt)
     : cs(cs),
-    
+
       slSystemOff("System is offline"),
       slShuttingDown("System shutting down"),
       slBraking("System braking"),
@@ -31,13 +31,13 @@ AutMobRoSSafetyProperties::AutMobRoSSafetyProperties(ControlSystem &cs, double d
     greenLED = hal.getLogicOutput("onBoardLEDgreen");
     redLED = hal.getLogicOutput("onBoardLEDred");
 
-    criticalOutputs = { greenLED, redLED };
+    criticalOutputs = {greenLED, redLED};
 
     // Declare and add critical inputs
     buttonPause = eeros::hal::HAL::instance().getLogicInput("onBoardButtonPause");
     buttonMode = eeros::hal::HAL::instance().getLogicInput("onBoardButtonMode");
 
-    criticalInputs = { buttonPause, buttonMode };
+    criticalInputs = {buttonPause, buttonMode};
 
     // Add all safety levels to the safety system
     addLevel(slSystemOff);
@@ -69,79 +69,103 @@ AutMobRoSSafetyProperties::AutMobRoSSafetyProperties(ControlSystem &cs, double d
     addEventToAllLevelsBetween(slSystemOn, slMotorPowerOn, emergency, slEmergency, kPublicEvent);
 
     // Define input actions for all levels
-    slSystemOff.setInputActions({           ignore(buttonPause),                    ignore(buttonMode) });
-    slShuttingDown.setInputActions({        ignore(buttonPause),                    ignore(buttonMode) });
-    slBraking.setInputActions({             ignore(buttonPause),                    ignore(buttonMode) });
-    slStartingUp.setInputActions({          ignore(buttonPause),                    ignore(buttonMode) });
-    slEmergency.setInputActions({           ignore(buttonPause),                    check(buttonMode, false, resetEmergency) });
-    slEmergencyBraking.setInputActions({    ignore(buttonPause),                    ignore(buttonMode) });
-    slSystemOn.setInputActions({            check(buttonPause, false, emergency),   ignore(buttonMode) });
-    slMotorPowerOn.setInputActions({        check(buttonPause, false, emergency),   ignore(buttonMode) });
-    slSystemMoving.setInputActions({        check(buttonPause, false, emergency),   ignore(buttonMode) });
+    slSystemOff.setInputActions({ignore(buttonPause), ignore(buttonMode)});
+    slShuttingDown.setInputActions({ignore(buttonPause), ignore(buttonMode)});
+    slBraking.setInputActions({ignore(buttonPause), ignore(buttonMode)});
+    slStartingUp.setInputActions({ignore(buttonPause), ignore(buttonMode)});
+    slEmergency.setInputActions({ignore(buttonPause), check(buttonMode, true, resetEmergency)});
+    slEmergencyBraking.setInputActions({ignore(buttonPause), ignore(buttonMode)});
+    slSystemOn.setInputActions({check(buttonPause, false, powerOn), ignore(buttonMode)});
+    slMotorPowerOn.setInputActions({ignore(buttonPause), check(buttonMode, false, emergency)});
+    slSystemMoving.setInputActions({ignore(buttonPause), check(buttonMode, false, emergency)});
 
     // Define output actions for all levels
-    slSystemOff.setOutputActions({           set(greenLED, false),   set(redLED, false) });
-    slShuttingDown.setOutputActions({        set(greenLED, false),   set(redLED, true) });
-    slBraking.setOutputActions({             set(greenLED, false),   set(redLED, true) });
-    slStartingUp.setOutputActions({          set(greenLED, true),    set(redLED, false) });
-    slEmergency.setOutputActions({           set(greenLED, true),    set(redLED, true) });
-    slEmergencyBraking.setOutputActions({    set(greenLED, true),    set(redLED, true) });
-    slSystemOn.setOutputActions({            set(greenLED, true),    set(redLED, false) });
-    slMotorPowerOn.setOutputActions({        set(greenLED, true),    set(redLED, false) });
-    slSystemMoving.setOutputActions({        set(greenLED, true),    set(redLED, false) });
+    slSystemOff.setOutputActions({set(greenLED, false), toggle(redLED)});
+    slShuttingDown.setOutputActions({set(greenLED, false), toggle(redLED)});
+    slBraking.setOutputActions({set(greenLED, false), toggle(redLED)});
+    slStartingUp.setOutputActions({toggle(greenLED), set(redLED, false)});
+    slEmergency.setOutputActions({set(greenLED, false), set(redLED, true)});
+    slEmergencyBraking.setOutputActions({set(greenLED, false), set(redLED, true)});
+    slSystemOn.setOutputActions({toggle(greenLED), toggle(redLED)});
+    slMotorPowerOn.setOutputActions({set(greenLED, true), set(redLED, false)});
+    slSystemMoving.setOutputActions({set(greenLED, true), set(redLED, false)});
 
     // Define and add level actions
-    slSystemOff.setLevelAction([&](SafetyContext *privateContext) {
-        eeros::Executor::stop();
-    });
+    slSystemOff.setLevelAction([&](SafetyContext *privateContext)
+                               { eeros::Executor::stop(); });
 
-    slShuttingDown.setLevelAction([&](SafetyContext *privateContext) {
-        cs.timedomain.stop();
-        privateContext->triggerEvent(shutdown);
-    });
-
-    slBraking.setLevelAction([&](SafetyContext *privateContext) {
-        // Check if motors are standing sill
-        privateContext->triggerEvent(motorsHalted);
-    });
-
-    slStartingUp.setLevelAction([&](SafetyContext *privateContext) {
-        cs.timedomain.start();
-        cs.fwKinOdom.enable();
-        cs.controller.enable();
-        privateContext->triggerEvent(systemStarted);
-    });
-
-    slEmergency.setLevelAction([&](SafetyContext *privateContext) {
+    slShuttingDown.setLevelAction([&](SafetyContext *privateContext)
+                                  {
         cs.fwKinOdom.disable();
-        cs.controller.disable();
-    });
+        cs.cont.disable();
+        cs.pp.disable();
+        cs.timedomain.stop();
+        privateContext->triggerEvent(shutdown); });
 
-    slEmergencyBraking.setLevelAction([&](SafetyContext *privateContext) {
-        // Check if motors are standing still
+    slBraking.setLevelAction([&](SafetyContext *privateContext)
+                             {
+        cs.fwKinOdom.enable();
+        cs.cont.enable();
+        cs.pp.disable();
+        if (abs(cs.Ed.getOut().getSignal().getValue()(0)) < 1e-3 && abs(cs.Ed.getOut().getSignal().getValue()(1)) < 1e-3)
+        {
         privateContext->triggerEvent(motorsHalted);
-    });
+        } });
 
-    slSystemOn.setLevelAction([&, dt](SafetyContext *privateContext) {
+    slStartingUp.setLevelAction([&](SafetyContext *privateContext)
+                                {
         cs.fwKinOdom.enable();
-        cs.controller.enable();
-    });
+        cs.cont.enable();
+        cs.pp.disable();
+        cs.timedomain.start();
+        privateContext->triggerEvent(systemStarted); });
 
-    slMotorPowerOn.setLevelAction([&, dt](SafetyContext *privateContext) {
+    slEmergency.setLevelAction([&](SafetyContext *privateContext)
+                               {
         cs.fwKinOdom.enable();
-        cs.controller.enable();
-    });
+        cs.cont.enable();
+        cs.pp.disable(); });
 
-    slSystemMoving.setLevelAction([&, dt](SafetyContext *privateContext) {
+    slEmergencyBraking.setLevelAction([&](SafetyContext *privateContext)
+                                      {
         cs.fwKinOdom.enable();
-        cs.controller.enable();
-    });
+        cs.cont.enable();
+        cs.pp.disable();
+        if (abs(cs.Ed.getOut().getSignal().getValue()(0)) < 1e-3 && abs(cs.Ed.getOut().getSignal().getValue()(1)) < 1e-3)
+        {
+            privateContext->triggerEvent(motorsHalted);
+        } });
+
+    slSystemOn.setLevelAction([&, dt](SafetyContext *privateContext)
+                              {
+        cs.fwKinOdom.enable();
+        cs.cont.enable();
+        cs.pp.disable(); });
+
+    slMotorPowerOn.setLevelAction([&, dt](SafetyContext *privateContext)
+                                  {
+        cs.fwKinOdom.enable();
+        cs.cont.enable();
+        cs.pp.enable();
+        if (abs(cs.Ed.getOut().getSignal().getValue()(0)) > 1e-1 || abs(cs.Ed.getOut().getSignal().getValue()(1)) > 1e-1)
+        {
+            privateContext->triggerEvent(startMoving);
+        } });
+
+    slSystemMoving.setLevelAction([&, dt](SafetyContext *privateContext)
+                                  {
+        cs.fwKinOdom.enable();
+        cs.cont.enable();
+        cs.pp.enable();
+        if (abs(cs.Ed.getOut().getSignal().getValue()(0)) < 1e-3 && abs(cs.Ed.getOut().getSignal().getValue()(1)) < 1e-3)
+        {
+            privateContext->triggerEvent(stopMoving);
+        } });
 
     // Define entry level
     setEntryLevel(slSystemOff);
 
     // Define exit function
-    exitFunction = ([&](SafetyContext *privateContext) {
-        privateContext->triggerEvent(abort);
-    });
+    exitFunction = ([&](SafetyContext *privateContext)
+                    { privateContext->triggerEvent(abort); });
 }
