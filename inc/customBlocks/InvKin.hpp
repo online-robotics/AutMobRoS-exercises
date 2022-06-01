@@ -1,20 +1,32 @@
 #ifndef INVKIN_HPP_
 #define INVKIN_HPP_
 
+/**
+ * @file InvKin.hpp
+ * @author Jonas Frei (jonas.frei@ost.ch)
+ * @brief Inverse kinematics block
+ * @version 0.1
+ * @date 2022-06-01
+ * 
+ * @copyright Copyright (c) 2022
+ * 
+ */
+
 #include <eeros/math/Matrix.hpp>
 #include <eeros/control/Blockio.hpp>
 
 using namespace eeros::control;
 
-/*!
- * Inverse kinematics class for a differential drive robot
+/**
+ * @brief Inverse kinematics class for a differential drive robot
+ * 
  */
 class InvKin : public Block
 {
 public:
-    /*!
-     * Constructor
-     *
+    /**
+     * @brief Construct a new Inv Kin object
+     * 
      * @param B distance between the two wheels
      */
     InvKin(double B)
@@ -33,27 +45,30 @@ public:
         WJR.getOut().getSignal().setName("vW [m/s]");
     }
 
-    /*!
-     * Input getter function
-     *
-     * @return Input for the robot velocity in x direction
+    /**
+     * @brief Input getter function
+     * 
+     * @return Input<>& Input for the robot velocity in x direction
      */
     Input<> &getInRvRx() { return WJR.getIn(0); }
-    /*!
-     * Input getter function
-     *
-     * @return Input for the angular robot velocity
+
+    /**
+     * @brief Input getter function
+     * 
+     * @return Input<>& Input for the angular robot velocity
      */
     Input<> &getInOmegaR() { return WJR.getIn(1); }
-    /*!
-     * Ouput getter function
-     *
-     * @return Output for the wheel velocities
+
+    /**
+     * @brief Ouput getter function
+     * 
+     * @return Output<eeros::math::Vector2>& Output for the wheel velocities
      */
     Output<eeros::math::Vector2> &getOut() { return WJR.getOut(); }
 
-    /*!
-     * run method
+    /**
+     * @brief run method
+     * 
      */
     virtual void run()
     {
