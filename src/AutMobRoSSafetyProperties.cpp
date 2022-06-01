@@ -107,11 +107,12 @@ AutMobRoSSafetyProperties::AutMobRoSSafetyProperties(ControlSystem &cs, double d
 
     slStartingUp.setLevelAction([&](SafetyContext *privateContext) {
         cs.timedomain.start();
+        cs.fwKinOdom.enable();
         privateContext->triggerEvent(systemStarted);
     });
 
     slEmergency.setLevelAction([&](SafetyContext *privateContext) {
-        
+        cs.fwKinOdom.disable();
     });
 
     slEmergencyBraking.setLevelAction([&](SafetyContext *privateContext) {
@@ -120,12 +121,15 @@ AutMobRoSSafetyProperties::AutMobRoSSafetyProperties(ControlSystem &cs, double d
     });
 
     slSystemOn.setLevelAction([&, dt](SafetyContext *privateContext) {
+        cs.fwKinOdom.enable();
     });
 
     slMotorPowerOn.setLevelAction([&, dt](SafetyContext *privateContext) {
+        cs.fwKinOdom.enable();
     });
 
     slSystemMoving.setLevelAction([&, dt](SafetyContext *privateContext) {
+        cs.fwKinOdom.enable();
     });
 
     // Define entry level

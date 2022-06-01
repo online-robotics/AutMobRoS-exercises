@@ -5,6 +5,8 @@
 #include <eeros/core/Executor.hpp>
 #include <eeros/control/PeripheralInput.hpp>
 #include <eeros/control/Mux.hpp>
+#include <eeros/control/D.hpp>
+#include "customBlocks/FwKinOdom.hpp"
 #include "customBlocks/Controller.hpp"
 #include "customBlocks/InvMotMod.hpp"
 #include <eeros/control/DeMux.hpp>
@@ -20,12 +22,8 @@ public:
     // Define Blocks
     PeripheralInput<> E1, E2;
     Mux<2> E;
-    Mux<2> E_d;
-    Controller<eeros::math::Vector2> cont;
-    InvMotMod<eeros::math::Vector2> invMotMod;
-    DeMux<2> U;
-    PeripheralOutput<> M1;
-    PeripheralOutput<> M2;
+    D<eeros::math::Vector2> Ed;
+    FwKinOdom fwKinOdom;
 
     TimeDomain timedomain;
 };
