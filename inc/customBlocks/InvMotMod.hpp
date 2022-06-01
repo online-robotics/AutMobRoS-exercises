@@ -33,7 +33,34 @@ public:
           i(i),
           kM(kM)
     {
-        init();
+        // Name all blocks
+        this->QMax.setName("QMax");
+        iInv.setName("iInv");
+        kMInv.setName("kMInv");
+        this->R.setName("R");
+        this->qdMax.setName("qdMax");
+        this->i.setName("i");
+        this->kM.setName("kM");
+        U.setName("U");
+
+        // Name all signals
+        this->QMax.getOut().getSignal().setName("Q [Nm]");
+        iInv.getOut().getSignal().setName("T [Nm]");
+        kMInv.getOut().getSignal().setName("I [A]");
+        this->R.getOut().getSignal().setName("UR [V]");
+        this->qdMax.getOut().getSignal().setName("qd [rad/s]");
+        this->i.getOut().getSignal().setName("om [rad/s]");
+        this->kM.getOut().getSignal().setName("Uom [V]");
+        U.getOut().getSignal().setName("U [V]");
+
+        // Connect signals
+        iInv.getIn().connect(this->QMax.getOut());
+        kMInv.getIn().connect(iInv.getOut());
+        this->R.getIn().connect(kMInv.getOut());
+        this->i.getIn().connect(this->qdMax.getOut());
+        this->kM.getIn().connect(this->i.getOut());
+        U.getIn(0).connect(this->R.getOut());
+        U.getIn(1).connect(this->kM.getOut());
     }
 
     /*!
@@ -84,39 +111,6 @@ protected:
     Saturation<T> QMax, qdMax;
     Gain<T> iInv, kMInv, R, i, kM;
     Sum<2, T> U;
-
-private:
-    void init()
-    {
-        // Name all blocks
-        QMax.setName("QMax");
-        iInv.setName("iInv");
-        kMInv.setName("kMInv");
-        R.setName("R");
-        qdMax.setName("qdMax");
-        i.setName("i");
-        kM.setName("kM");
-        U.setName("U");
-
-        // Name all signals
-        QMax.getOut().getSignal().setName("Q [Nm]");
-        iInv.getOut().getSignal().setName("T [Nm]");
-        kMInv.getOut().getSignal().setName("I [A]");
-        R.getOut().getSignal().setName("UR [V]");
-        qdMax.getOut().getSignal().setName("qd [rad/s]");
-        i.getOut().getSignal().setName("om [rad/s]");
-        kM.getOut().getSignal().setName("Uom [V]");
-        U.getOut().getSignal().setName("U [V]");
-
-        // Connect signals
-        iInv.getIn().connect(QMax.getOut());
-        kMInv.getIn().connect(iInv.getOut());
-        R.getIn().connect(kMInv.getOut());
-        i.getIn().connect(qdMax.getOut());
-        kM.getIn().connect(i.getOut());
-        U.getIn(0).connect(R.getOut());
-        U.getIn(1).connect(kM.getOut());
-    }
 };
 
 #endif // INVMOTMOD_HPP_
