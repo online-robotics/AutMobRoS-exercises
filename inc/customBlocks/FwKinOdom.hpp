@@ -1,6 +1,17 @@
 #ifndef FWKINODOM_HPP_
 #define FWKINODOM_HPP_
 
+/**
+ * @file FwKinOdom.hpp
+ * @author Jonas Frei (jonas.frei@ost.ch)
+ * @brief Forward kinematic and odometry block
+ * @version 0.1
+ * @date 2022-06-01
+ * 
+ * @copyright Copyright (c) 2022
+ * 
+ */
+
 #include <eeros/math/Matrix.hpp>
 #include <eeros/control/Blockio.hpp>
 #include <eeros/control/InputSub.hpp>
@@ -10,15 +21,16 @@
 
 using namespace eeros::control;
 
-/*!
- *   Forward kinematics and odometry class for a differential drive robot
+/**
+ * @brief Forward kinematics and odometry class for a differential drive robot
+ * 
  */
 class FwKinOdom : public Block
 {
 public:
-    /*!
-     * Constructor
-     *
+    /**
+     * @brief Construct a new Fw Kin Odom object
+     * 
      * @param B distance between the two wheels
      * @param GrRInit Initial global robot position
      * @param phiInit Initial global robot orientation
@@ -73,39 +85,44 @@ public:
         GrR.getIn().connect(GRR.getOut());
     }
 
-    /*!
-     * Input getter function (wheel velocity)
-     *
-     * @return wheel velocity input
+    /**
+     * @brief Input getter function
+     * 
+     * @return Input<eeros::math::Vector2>& wheel velocity input
      */
     Input<eeros::math::Vector2> &getIn() { return vw; }
+
     /**
-     * Output getter function
-     *
-     * @return global robot velocity
+     * @brief Output getter function
+     * 
+     * @return Output<eeros::math::Vector2>& global robot velocity
      */
     Output<eeros::math::Vector2> &getOutGvR() { return GRR.getOut(); }
-    /*!
-     * Output getter function
-     *
-     * @return global robot position
+
+    /**
+     * @brief Output getter function
+     * 
+     * @return Output<eeros::math::Vector2>& global robot position
      */
     Output<eeros::math::Vector2> &getOutGrR() { return GrR.getOut(); }
-    /*!
-     * Output getter function
-     *
-     * @return global robot orientation
+
+    /**
+     * @brief Output getter function
+     * 
+     * @return Output<>& global robot orientation
      */
     Output<> &getOutPhi() { return phi.getOut(); }
-    /*!
-     * Output getter function
-     *
-     * @return global robot angular velocity
+
+    /**
+     * @brief Output getter function
+     * 
+     * @return Output<>& global robot angular velocity
      */
     Output<> &getOutOmegaR() { return RJW.getOut(2); }
 
-    /*!
-     * Run method
+    /**
+     * @brief run method
+     * 
      */
     virtual void run()
     {
@@ -115,8 +132,9 @@ public:
         GrR.run();
     }
 
-    /*!
-     * Enable the integrators
+    /**
+     * @brief Enable the integrators
+     * 
      */
     void enable(void)
     {
@@ -124,8 +142,9 @@ public:
         phi.enable();
     }
 
-    /*!
-     * Disable the integrators
+    /**
+     * @brief Disable the integrators
+     * 
      */
     void disable(void)
     {
@@ -133,9 +152,9 @@ public:
         phi.disable();
     }
 
-    /*!
-     * Set position and orientation
-     *
+    /**
+     * @brief Set position and orientation
+     * 
      * @param GrR global robot position
      * @param phi global robot orientation
      */
