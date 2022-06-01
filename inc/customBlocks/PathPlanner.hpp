@@ -179,8 +179,8 @@ public:
     /**
      * @brief Get the path planner status
      *
-     * @return true path planner running
-     * @return false target position reached
+     * @return true target position reached
+     * @return false path planner still running
      */
     bool getStatus(void) { return targetReached; }
 
