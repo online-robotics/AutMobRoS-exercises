@@ -35,14 +35,15 @@ public:
      * @param om0 natural frequency
      * @param D lehr's damping ratio
      * @param M mass matrix
+     * @param eLimit integrator limit
      */
-    Controller(double om0, double D, double M)
+    Controller(double om0, double D, double M, T eLimit)
         : qd(this),
           KP(2.0 * D * om0),
           KI(om0 * om0),
           M(M)
     {
-        init();
+        init(eLimit);
     }
 
     /**
@@ -52,14 +53,15 @@ public:
      * @param D lehr's damping ratio
      * @param s safety factor
      * @param M mass matrix
+     * @param eLimit integrator limit
      */
-    Controller(double fTask, double D, double s, double M)
+    Controller(double fTask, double D, double s, double M, T eLimit)
         : qd(this),
           KP(fTask / s),
           KI(fTask / 2.0 / s / D * fTask / 2.0 / s / D),
           M(M)
     {
-        init();
+        init(eLimit);
     }
 
     /**
@@ -120,6 +122,34 @@ public:
         M.run();
     }
 
+    /**
+     * @brief enable integrator
+     * 
+     */
+    void enable()
+    {
+        e.enable();
+    }
+
+    /**
+     * @brief disable integrator
+     * 
+     */
+    void disable()
+    {
+        e.disable();
+    }
+
+    /**
+     * @brief sets the position error limit
+     * 
+     * @param eLimit position error limit
+     */
+    void setELimit(T eLimit)
+    {
+        e.setLimit(eLimit, -eLimit);
+    }
+
 protected:
     InputSub<T> qd;
     Sum<2, T> ed, qddC;
@@ -130,8 +160,9 @@ private:
     /**
      * @brief init method
      *
+     * @param eLimit integrator limit
      */
-    void init()
+    void init(T eLimit)
     {
         // Name all blocks
         ed.setName("controller->ed");
@@ -158,6 +189,11 @@ private:
         qddC.getIn(0).connect(KP.getOut());
         qddC.getIn(1).connect(KI.getOut());
         M.getIn().connect(qddC.getOut());
+
+        // Additional configuration
+        T eInit = 0.0;
+        e.setInitCondition(eInit);
+        e.setLimit(eLimit, -eLimit);
     }
 };
 

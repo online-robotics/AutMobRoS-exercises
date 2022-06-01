@@ -8,8 +8,8 @@ ControlSystem::ControlSystem(double dt)
       omegaR(0.0),
       invKin(0.15),
       g(21.2 / 2.0 / M_PI),
-      controller(1 / dt, 0.7, 2.3, 3441.0 / 104.0 * 3441.0 / 104.0 * 6.8e-8),
-      invMotMod(0.1, 21.2, 3441.0/104.0, 8.44e-3, 8.0),
+      controller(1 / dt, 0.7, 2.3, 3441.0 / 104.0 / 0.04 * 3441.0 / 104.0 / 0.04 * 6.8e-8, 0.1),
+      invMotMod(0.1 / 0.04, 21.2 * 0.04, 3441.0 / 104.0 / 0.04, 8.44e-3, 8.0),
       M1("motor1"),
       timedomain("Main time domain", dt, true)
 {
