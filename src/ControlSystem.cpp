@@ -37,11 +37,11 @@ ControlSystem::ControlSystem(double dt)
     KF1.getX(0).getSignal().setName("q1o [m]");
     KF1.getX(1).getSignal().setName("qd1o [m/s]");
     KF1.getX(2).getSignal().setName("I1o [A]");
-    KF1.getX(3).getSignal().setName("qdd1o [m/s²]");
+    KF1.getX(3).getSignal().setName("Offset qdd1o [m/s²]");
     KF2.getX(0).getSignal().setName("q2o [m]");
     KF2.getX(1).getSignal().setName("qd2o [m/s]");
     KF2.getX(2).getSignal().setName("I2o [A]");
-    KF2.getX(3).getSignal().setName("qdd2o [m/s²]");
+    KF2.getX(3).getSignal().setName("Offset qdd2o [m/s²]");
     Ed.getOut().getSignal().setName("qd [m/s]");
 
     // Connect signals
