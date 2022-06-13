@@ -5,6 +5,8 @@ using namespace AMRSC;
 ControlSystem::ControlSystem(double dt)
     : E1("enc1"),
       E2("enc2"),
+      KF1(AMRSC::KF::Ad, AMRSC::KF::Bd, AMRSC::KF::C, AMRSC::KF::Gd, AMRSC::KF::Q, AMRSC::KF::R),
+      KF2(AMRSC::KF::Ad, AMRSC::KF::Bd, AMRSC::KF::C, AMRSC::KF::Gd, AMRSC::KF::Q, AMRSC::KF::R),
       fwKinOdom(ROB::B, ROB::L),
       tcpVecPosCont(TCPCont::fPos, TCPCont::D, TCPCont::VMAX),
       invKin(ROB::L, ROB::B),
@@ -17,7 +19,8 @@ ControlSystem::ControlSystem(double dt)
     // Name all blocks
     E1.setName("E1");
     E2.setName("E2");
-    E.setName("E");
+    KF1.setName("KF1");
+    KF2.setName("KF2");
     Ed.setName("Ed");
     fwKinOdom.setName("fwKinOdom");
     tcpVecPosCont.setName("tcpVecPosCont");
@@ -31,13 +34,21 @@ ControlSystem::ControlSystem(double dt)
     // Name all signals
     E1.getOut().getSignal().setName("q1 [m]");
     E2.getOut().getSignal().setName("q2 [m]");
-    E.getOut().getSignal().setName("q [m]");
+    KF1.getX(0).getSignal().setName("q1o [m]");
+    KF1.getX(1).getSignal().setName("qd1o [m/s]");
+    KF1.getX(2).getSignal().setName("I1o [A]");
+    KF1.getX(3).getSignal().setName("qdd1o [m/s²]");
+    KF2.getX(0).getSignal().setName("q2o [m]");
+    KF2.getX(1).getSignal().setName("qd2o [m/s]");
+    KF2.getX(2).getSignal().setName("I2o [A]");
+    KF2.getX(3).getSignal().setName("qdd2o [m/s²]");
     Ed.getOut().getSignal().setName("qd [m/s]");
 
     // Connect signals
-    E.getIn(0).connect(E1.getOut());
-    E.getIn(1).connect(E2.getOut());
-    Ed.getIn().connect(E.getOut());
+    KF1.getY(0).connect(E1.getOut());
+    KF2.getY(0).connect(E2.getOut());
+    Ed.getIn(0).connect(KF1.getX(1));
+    Ed.getIn(1).connect(KF2.getX(1));
     fwKinOdom.getIn().connect(Ed.getOut());
     tcpVecPosCont.getIn().connect(fwKinOdom.getOutGrT());
     invKin.getInGvTc().connect(tcpVecPosCont.getOut());
@@ -47,13 +58,16 @@ ControlSystem::ControlSystem(double dt)
     invMotMod.getIn(0).connect(cont.getOut(0));
     invMotMod.getIn(1).connect(cont.getOut(1));
     M.getIn().connect(invMotMod.getOut());
+    KF1.getU(0).connect(M.getOut(0));
+    KF2.getU(0).connect(M.getOut(1));
     M1.getIn().connect(M.getOut(0));
     M2.getIn().connect(M.getOut(1));
 
     // Add blocks to timedomain
     timedomain.addBlock(E1);
     timedomain.addBlock(E2);
-    timedomain.addBlock(E);
+    timedomain.addBlock(KF1.correct);
+    timedomain.addBlock(KF2.correct);
     timedomain.addBlock(Ed);
     timedomain.addBlock(fwKinOdom);
     timedomain.addBlock(tcpVecPosCont);
@@ -61,6 +75,8 @@ ControlSystem::ControlSystem(double dt)
     timedomain.addBlock(cont);
     timedomain.addBlock(invMotMod);
     timedomain.addBlock(M);
+    timedomain.addBlock(KF1.predict);
+    timedomain.addBlock(KF2.predict);
     timedomain.addBlock(M1);
     timedomain.addBlock(M2);
 

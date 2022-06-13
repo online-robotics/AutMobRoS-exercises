@@ -4,6 +4,7 @@
 #include <eeros/control/TimeDomain.hpp>
 #include <eeros/core/Executor.hpp>
 #include <eeros/control/PeripheralInput.hpp>
+#include <eeros/control/filter/KalmanFilter.hpp>
 #include <eeros/control/Mux.hpp>
 #include <eeros/control/D.hpp>
 #include "customBlocks/FwKinOdom.hpp"
@@ -24,8 +25,8 @@ public:
 
     // Define Blocks
     PeripheralInput<> E1, E2;
-    Mux<2> E;
-    D<eeros::math::Vector2> Ed;
+    KalmanFilter<1, 1, 4, 1> KF1, KF2;
+    Mux<2> Ed;
     FwKinOdom fwKinOdom;
     TCPVecPosCont tcpVecPosCont;
     InvKin invKin;

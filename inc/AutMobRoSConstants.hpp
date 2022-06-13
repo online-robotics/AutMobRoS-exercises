@@ -1,6 +1,8 @@
 #ifndef AMRSCONSTANTS_HPP_
 #define AMRSCONSTANTS_HPP_
 
+#include <eeros/math/Matrix.hpp>
+
 namespace AMRSC
 {
     namespace MOT
@@ -37,6 +39,18 @@ namespace AMRSC
     {
         const double B = 0.15;                      // [m]
         const double L = 0.17;                      // [m]
+    }
+    namespace KF
+    {
+        const eeros::math::Matrix<4, 4> Ad = {1.0, 0.0, 0.0, 0.0,
+                                              9.901294350681072e-04, 0.980258870136214, -1.563880235077955, 0.0,
+                                              1.187647358725703e-06, 0.002375294717451, -0.811830605100179, 0.0,
+                                              -4.950647175340536e-07, -9.901294350681072e-04, 7.819401175389773e-04, 1.0};
+        const eeros::math::Matrix<4, 1> Bd = {1.413865903244885e-06, 0.002827731806490, 0.224011184404549, 0.0};
+        const eeros::math::Matrix<1, 4> C = {1.0, 0.0, 0.0, 0.0};
+        const eeros::math::Matrix<4, 1> Gd = {-4.950647175340536e-07, -9.901294350681072e-04, 7.819401175389773e-04, 1.0};
+        const double Q = 2.777777777777778e-08;
+        const double R = 1.173912855809449e-09;
     }
 }
 
