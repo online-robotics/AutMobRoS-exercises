@@ -5,9 +5,9 @@ using namespace AMRSC;
 ControlSystem::ControlSystem(double dt)
     : E1("enc1"),
       E2("enc2"),
-      fwKinOdom(ROB::B),
-      pp(PP::K1, PP::K2, PP::K3, PP::POSTOL, PP::ROTTOL),
-      invKin(ROB::B),
+      fwKinOdom(ROB::B, ROB::L),
+      tcpVecPosCont(TCPCont::fPos, TCPCont::D, TCPCont::VMAX),
+      invKin(ROB::L, ROB::B),
       cont(1.0 / dt, CONT::D, CONT::s, CONT::M, CONT::ILIMIT),
       invMotMod(MOT::QMAX, MOT::qdMAX, MOT::i, MOT::KM, MOT::R),
       M1("motor1"),
@@ -20,7 +20,7 @@ ControlSystem::ControlSystem(double dt)
     E.setName("E");
     Ed.setName("Ed");
     fwKinOdom.setName("fwKinOdom");
-    pp.setName("pp");
+    tcpVecPosCont.setName("tcpVecPosCont");
     invKin.setName("invKin");
     cont.setName("cont");
     invMotMod.setName("invMotMod");
@@ -39,10 +39,9 @@ ControlSystem::ControlSystem(double dt)
     E.getIn(1).connect(E2.getOut());
     Ed.getIn().connect(E.getOut());
     fwKinOdom.getIn().connect(Ed.getOut());
-    pp.getInGrR().connect(fwKinOdom.getOutGrR());
-    pp.getInphi().connect(fwKinOdom.getOutPhi());
-    invKin.getInRvRx_d().connect(pp.getOutRvRx_d());
-    invKin.getInOmegaR_d().connect(pp.getOutomegaR_d());
+    tcpVecPosCont.getIn().connect(fwKinOdom.getOutGrT());
+    invKin.getInGvTc().connect(tcpVecPosCont.getOut());
+    invKin.getInPhi().connect(fwKinOdom.getOutPhi());
     cont.getIn(0).connect(invKin.getOut());
     cont.getIn(1).connect(Ed.getOut());
     invMotMod.getIn(0).connect(cont.getOut(0));
@@ -57,7 +56,7 @@ ControlSystem::ControlSystem(double dt)
     timedomain.addBlock(E);
     timedomain.addBlock(Ed);
     timedomain.addBlock(fwKinOdom);
-    timedomain.addBlock(pp);
+    timedomain.addBlock(tcpVecPosCont);
     timedomain.addBlock(invKin);
     timedomain.addBlock(cont);
     timedomain.addBlock(invMotMod);

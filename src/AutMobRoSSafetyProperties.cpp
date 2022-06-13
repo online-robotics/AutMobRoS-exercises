@@ -75,7 +75,7 @@ AutMobRoSSafetyProperties::AutMobRoSSafetyProperties(ControlSystem &cs, double d
     slStartingUp.setInputActions({ignore(buttonPause), ignore(buttonMode)});
     slEmergency.setInputActions({ignore(buttonPause), check(buttonMode, true, resetEmergency)});
     slEmergencyBraking.setInputActions({ignore(buttonPause), ignore(buttonMode)});
-    slSystemOn.setInputActions({check(buttonPause, false, powerOn), ignore(buttonMode)});
+    slSystemOn.setInputActions({check(buttonPause, false, powerOn), check(buttonMode, false, emergency)});
     slMotorPowerOn.setInputActions({ignore(buttonPause), check(buttonMode, false, emergency)});
     slSystemMoving.setInputActions({ignore(buttonPause), check(buttonMode, false, emergency)});
 
@@ -98,7 +98,7 @@ AutMobRoSSafetyProperties::AutMobRoSSafetyProperties(ControlSystem &cs, double d
                                   {
         cs.fwKinOdom.disable();
         cs.cont.disable();
-        cs.pp.disable();
+        cs.tcpVecPosCont.disable();
         cs.timedomain.stop();
         privateContext->triggerEvent(shutdown); });
 
@@ -106,7 +106,7 @@ AutMobRoSSafetyProperties::AutMobRoSSafetyProperties(ControlSystem &cs, double d
                              {
         cs.fwKinOdom.enable();
         cs.cont.enable();
-        cs.pp.disable();
+        cs.tcpVecPosCont.disable();
         if (abs(cs.Ed.getOut().getSignal().getValue()(0)) < 1e-3 && abs(cs.Ed.getOut().getSignal().getValue()(1)) < 1e-3)
         {
         privateContext->triggerEvent(motorsHalted);
@@ -116,7 +116,7 @@ AutMobRoSSafetyProperties::AutMobRoSSafetyProperties(ControlSystem &cs, double d
                                 {
         cs.fwKinOdom.enable();
         cs.cont.enable();
-        cs.pp.disable();
+        cs.tcpVecPosCont.disable();
         cs.timedomain.start();
         privateContext->triggerEvent(systemStarted); });
 
@@ -124,13 +124,13 @@ AutMobRoSSafetyProperties::AutMobRoSSafetyProperties(ControlSystem &cs, double d
                                {
         cs.fwKinOdom.enable();
         cs.cont.enable();
-        cs.pp.disable(); });
+        cs.tcpVecPosCont.disable(); });
 
     slEmergencyBraking.setLevelAction([&](SafetyContext *privateContext)
                                       {
         cs.fwKinOdom.enable();
         cs.cont.enable();
-        cs.pp.disable();
+        cs.tcpVecPosCont.disable();
         if (abs(cs.Ed.getOut().getSignal().getValue()(0)) < 1e-3 && abs(cs.Ed.getOut().getSignal().getValue()(1)) < 1e-3)
         {
             privateContext->triggerEvent(motorsHalted);
@@ -140,13 +140,13 @@ AutMobRoSSafetyProperties::AutMobRoSSafetyProperties(ControlSystem &cs, double d
                               {
         cs.fwKinOdom.enable();
         cs.cont.enable();
-        cs.pp.disable(); });
+        cs.tcpVecPosCont.disable(); });
 
     slMotorPowerOn.setLevelAction([&, dt](SafetyContext *privateContext)
                                   {
         cs.fwKinOdom.enable();
         cs.cont.enable();
-        cs.pp.enable();
+        cs.tcpVecPosCont.enable();
         if (abs(cs.Ed.getOut().getSignal().getValue()(0)) > 1e-1 || abs(cs.Ed.getOut().getSignal().getValue()(1)) > 1e-1)
         {
             privateContext->triggerEvent(startMoving);
@@ -156,7 +156,7 @@ AutMobRoSSafetyProperties::AutMobRoSSafetyProperties(ControlSystem &cs, double d
                                   {
         cs.fwKinOdom.enable();
         cs.cont.enable();
-        cs.pp.enable();
+        cs.tcpVecPosCont.enable();
         if (abs(cs.Ed.getOut().getSignal().getValue()(0)) < 1e-3 && abs(cs.Ed.getOut().getSignal().getValue()(1)) < 1e-3)
         {
             privateContext->triggerEvent(stopMoving);

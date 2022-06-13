@@ -7,7 +7,7 @@
 #include <eeros/control/Mux.hpp>
 #include <eeros/control/D.hpp>
 #include "customBlocks/FwKinOdom.hpp"
-#include "customBlocks/PathPlanner.hpp"
+#include "customBlocks/TCPVecPosCont.hpp"
 #include "customBlocks/InvKin.hpp"
 #include "customBlocks/Controller.hpp"
 #include "customBlocks/InvMotMod.hpp"
@@ -27,7 +27,7 @@ public:
     Mux<2> E;
     D<eeros::math::Vector2> Ed;
     FwKinOdom fwKinOdom;
-    PathPlanner pp;
+    TCPVecPosCont tcpVecPosCont;
     InvKin invKin;
     Controller<eeros::math::Vector2> cont;
     InvMotMod<eeros::math::Vector2> invMotMod;
