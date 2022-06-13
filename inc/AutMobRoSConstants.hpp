@@ -27,9 +27,16 @@ namespace AMRSC
         const double POSTOL = 1e-3;                 // [m]
         const double ROTTOL = 1e-3;                 // [rad]
     }
+    namespace TCPCont
+    {
+        const double D = 0.7;                       // [-]
+        const double VMAX = 0.1;                    // [m/s]
+        const double fPos = 10.0;                    // [Hz]
+    }
     namespace ROB
     {
         const double B = 0.15;                      // [m]
+        const double L = 0.17;                      // [m]
     }
 }
 
