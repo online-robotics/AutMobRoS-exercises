@@ -6,7 +6,6 @@
 #include <eeros/control/PeripheralInput.hpp>
 #include <eeros/control/filter/KalmanFilter.hpp>
 #include <eeros/control/Mux.hpp>
-#include <eeros/control/D.hpp>
 #include "customBlocks/FwKinOdom.hpp"
 #include "customBlocks/TCPVecPosCont.hpp"
 #include "customBlocks/InvKin.hpp"
