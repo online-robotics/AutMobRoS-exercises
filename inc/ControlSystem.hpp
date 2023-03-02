@@ -11,7 +11,7 @@
 #include "customBlocks/InvMotMod.hpp"
 #include <eeros/control/DeMux.hpp>
 #include <eeros/control/PeripheralOutput.hpp>
-#include "AutMobRosConstants.hpp"
+#include "AutMobRoSConstants.hpp"
 #include "customBlocks/RemoteControl.hpp"
 
 using namespace eeros::control;
