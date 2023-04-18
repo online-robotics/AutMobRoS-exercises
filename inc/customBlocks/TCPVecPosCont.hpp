@@ -63,7 +63,14 @@ public:
             {
                 GvTc = -GvTcMax;
             }
-            this->getOut().getSignal().setValue(GvTc * GeTd / GeTdNorm);
+            if (GeTdNorm > 0.0)
+            {
+                this->getOut().getSignal().setValue(GvTc * GeTd / GeTdNorm);
+            }
+            else
+            {
+                this->getOut().getSignal().setValue(0.0);
+            }
             status = (GeTdNorm < tol);
         }
         else
