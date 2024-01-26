@@ -17,7 +17,7 @@ ControlSystem::ControlSystem(double dt)
     E2.setName("E2");
     E.setName("E");
     Ed.setName("Ed");
-    remote.setName("remote");
+    xBoxIn.setName("xBoxIn");
     invKin.setName("invKin");
     cont.setName("cont");
     invMotMod.setName("invMotMod");
@@ -30,15 +30,13 @@ ControlSystem::ControlSystem(double dt)
     E2.getOut().getSignal().setName("q2 [m]");
     E.getOut().getSignal().setName("q [m]");
     Ed.getOut().getSignal().setName("qd [m/s]");
-    remote.getOut(0).getSignal().setName("RvRx [m/s]");
-    remote.getOut(1).getSignal().setName("omegaR [rad/s]");
 
     // Connect signals
     E.getIn(0).connect(E1.getOut());
     E.getIn(1).connect(E2.getOut());
     Ed.getIn().connect(E.getOut());
-    invKin.getInRvRx_d().connect(remote.getOut(0));
-    invKin.getInOmegaR_d().connect(remote.getOut(1));
+    invKin.getInRvRx_d().connect(xBoxIn.getOut(0));
+    invKin.getInOmegaR_d().connect(xBoxIn.getOut(1));
     cont.getIn(0).connect(invKin.getOut());
     cont.getIn(1).connect(Ed.getOut());
     invMotMod.getIn(0).connect(cont.getOut(0));
@@ -52,7 +50,7 @@ ControlSystem::ControlSystem(double dt)
     timedomain.addBlock(E2);
     timedomain.addBlock(E);
     timedomain.addBlock(Ed);
-    timedomain.addBlock(remote);
+    timedomain.addBlock(xBoxIn);
     timedomain.addBlock(invKin);
     timedomain.addBlock(cont);
     timedomain.addBlock(invMotMod);
