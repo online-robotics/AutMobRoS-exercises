@@ -33,6 +33,8 @@ int main(int argc, char **argv)
     AutMobRoSSafetyProperties sp(cs, dt);
     eeros::safety::SafetySystem ss(sp, dt);
     cs.timedomain.registerSafetyEvent(ss, sp.abort); // fired if timedomain fails to run properly
+    cs.signalChecker.registerSafetyEvent(ss, sp.emergency);
+    cs.signalChecker.setActiveLevel(sp.slSystemOn);
     signal(SIGINT, signalHandler);
 
     log.info() << "Initializing sequencer...";

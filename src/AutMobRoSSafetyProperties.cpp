@@ -120,6 +120,7 @@ AutMobRoSSafetyProperties::AutMobRoSSafetyProperties(ControlSystem &cs, double d
     });
 
     slSystemOn.setLevelAction([&, dt](SafetyContext *privateContext) {
+        cs.signalChecker.reset();
         if (slSystemOn.getNofActivations()*dt >= 1)   // wait 1 sec
         {
             privateContext->triggerEvent(powerOn);
