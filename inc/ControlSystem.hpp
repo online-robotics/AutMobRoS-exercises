@@ -18,8 +18,8 @@ public:
     // Define Blocks
     PeripheralInput<> q1;
     Gain<> g;
-    Constant<> c;
-    PeripheralOutput<> servo;
+    Constant<> motorVoltageSetpoint;
+    PeripheralOutput<> motor;
 
     TimeDomain timedomain;
 };

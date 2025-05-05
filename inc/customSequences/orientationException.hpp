@@ -29,6 +29,8 @@ public:
     int action()
     {
         log.warn() << "Orientation around x is outside of the allowed range!";
+        log.warn() << "Stoping all motors!";
+        cs.motorVoltageSetpoint.setValue(0);
         return 0;
     }
 

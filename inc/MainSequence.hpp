@@ -7,7 +7,7 @@
 #include "AutMobRoSSafetyProperties.hpp"
 #include "ControlSystem.hpp"
 #include <eeros/sequencer/Wait.hpp>
-#include "customSteps/moveServoTo.hpp"
+#include "customSteps/setMotorVoltage.hpp"
 #include "customSequences/orientationException.hpp"
 #include <eeros/sequencer/Monitor.hpp>
 
@@ -23,7 +23,7 @@ public:
           cs(cs),
 
           sleep("Sleep", this),
-          moveServoTo("moveServoTo", this, cs),
+          setMotorVoltage("setMotorVoltage", this, cs),
 
           checkOrientation(0.1, cs),
           orientationException("Orientation exception", this, cs, checkOrientation),
@@ -37,10 +37,10 @@ public:
     {
         while (eeros::sequencer::Sequencer::running)
         {
-            moveServoTo(-0.5);
-            sleep(1.0);
-            moveServoTo(0.5);
-            sleep(1.0);
+            setMotorVoltage(-0.5);
+            sleep(2.0);
+            setMotorVoltage(0.5);
+            sleep(2.0);
         }
         return 0;
     }
@@ -51,7 +51,7 @@ private:
     AutMobRoSSafetyProperties &sp;
 
     eeros::sequencer::Wait sleep;
-    MoveServoTo moveServoTo;
+    SetMotorVoltage setMotorVoltage;
     CheckOrientation checkOrientation;
     OrientationException orientationException;
     eeros::sequencer::Monitor orientationMonitor;
