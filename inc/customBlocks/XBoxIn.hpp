@@ -12,7 +12,7 @@ using namespace eeros::control;
 class XBoxIn : public Blockio<0,2,eeros::math::Matrix<8>, double>
 {
 public:
-    XBoxIn(std::string dev = "/dev/input/js0", double RvRx = 0.25, double omegaR = 1.5)
+    XBoxIn(std::string dev = "/dev/input/js0", double RvRx = 0.5, double omegaR = 2.0)
         : xBoxInput(dev),
           RvRx(RvRx),
           omegaR(omegaR)
